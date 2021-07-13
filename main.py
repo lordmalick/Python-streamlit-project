@@ -260,7 +260,7 @@ def plot_raw_data_log():
 	fig.layout.update(title_text='Données de séries temporelles avec Rangeslider', xaxis_rangeslider_visible=True)
 	st.plotly_chart(fig)
 	
-###checkbox (journal de données)
+###checkbox
 select = st.checkbox(" Tracer à l'echelle Logarithmique")
 if select:
 	plot_raw_data_log()
@@ -268,20 +268,20 @@ else:
 	plot_raw_data()
 
 
-### Use button to start model prediction
+###prediction
 if st.button("Predire"):
 
-	### Get the required data & rename the columns so fbprophet can read it
+	### data
 	df_train = data[['Date','Close']]
 	df_train = df_train.rename(columns={"Date": "ds", "Close": "y"})
 
 	### Create Prophet model
 	m = Prophet(
-		changepoint_range=0.8, # percentage of dataset to train on
-		yearly_seasonality='auto', # taking yearly seasonality into account
-		weekly_seasonality='auto', # taking weekly seasonality into account
-		daily_seasonality=False, # taking daily seasonality into account
-		seasonality_mode='multiplicative' # additive (for more linear data) or multiplicative seasonality (for more non-linear data)
+		changepoint_range=0.8, 
+		yearly_seasonality='auto', 
+		weekly_seasonality='auto', 
+		daily_seasonality=False, 
+		seasonality_mode='multiplicative' 
 	)
 	
 	m.fit(df_train)
