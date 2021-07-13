@@ -1,2 +1,0 @@
-  
-web: sh conf.sh && streamlit run main.py
