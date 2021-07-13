@@ -9,4 +9,4 @@
  Historic_Crypto==0.1.4
  cryptocmd==0.6.0
  fbprophet==0.7.1
- 
+ pystan==2.19.1.1
