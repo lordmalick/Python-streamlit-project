@@ -61,7 +61,7 @@ expander_bar.markdown("""
 
 #---------------------------------#
 
-col1 = st.sidebar
+col3 = st.sidebar
 st.markdown(
     """
     <style>
@@ -76,7 +76,7 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
-col2, col3 = st.beta_columns((3,2))
+col2, col1 = st.beta_columns((3,2))
 
 #---------------------------------#
 # Sidebar + Main panel
