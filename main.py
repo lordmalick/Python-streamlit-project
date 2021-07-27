@@ -267,7 +267,17 @@ if select:
 else:
 	plot_raw_data()
 
-
+st.markdown("""
+<h2> Prediction des futures evolutions des crypto-monnaies.</h2> 
+ <span>Dans cette section vous pouvez obtenir les prochaines tendances de l'evolution des crypto-monnaies.
+       Cependant notez qu'il puisse y avoir une marge avec les vraies valeurs en temps réel.
+       L'exactitude des valeurs n'est donc pas garanties.</span>
+""",
+unsafe_allow_html=True
+)
+st.markdown("""<br>""",
+unsafe_allow_html=True
+)
 ###prediction
 if st.button("Predire"):
 
