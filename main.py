@@ -3,7 +3,6 @@ from PIL import Image
 import pandas as pd
 import base64
 import matplotlib.pyplot as plt
-from bs4 import BeautifulSoup
 import requests
 import json
 import time
@@ -19,6 +18,8 @@ from Historic_Crypto import HistoricalData
 from Historic_Crypto import Cryptocurrencies
 from Historic_Crypto import LiveCryptoData
 from Historic_Crypto import Cryptocurrencies
+from requests import Request, Session
+from requests.exceptions import ConnectionError, Timeout, TooManyRedirects
 
 st.set_page_config(
     page_title="Crypto App",
@@ -82,17 +83,30 @@ col2, col1 = st.beta_columns((3,2))
 # Sidebar + Main panel
 col1.header('Options de Saisie')
 
-currency_price_unit = col1.selectbox('Sélectionnez la devise pour le prix', ('USD', 'BTC', 'ETH'))
+currency_price_unit = col1.selectbox('Sélectionnez une devise ', ('USD', 'EUR'))
 
 def load_data():
-    cmc = requests.get('https://coinmarketcap.com')
-    soup = BeautifulSoup(cmc.content, 'html.parser')
+    url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest'
+    parameters = {
+    'start':'1',
+    'limit':'100',
+    'convert':currency_price_unit
+    }
+    headers = {
+    'Accepts': 'application/json',
+    'X-CMC_PRO_API_KEY': 'f717d466-bc7b-40f2-8e8b-d2448e9b98f2',
+    }
 
-    data = soup.find('script', id='__NEXT_DATA__', type='application/json')
-    coins = {}
-    coin_data = json.loads(data.contents[0])
-    listings = coin_data['props']['initialState']['cryptocurrency']['listingLatest']['data']
-    return listings
+    session = Session()
+    session.headers.update(headers)
+
+    try:
+        response = session.get(url, params=parameters)
+        data = json.loads(response.text)
+        return data['data']
+    except (ConnectionError, Timeout, TooManyRedirects) as e:
+        print(e)
+
    
 def crypto_values():
     data=load_data()
@@ -105,7 +119,7 @@ def crypto_values():
        cpt_name.append(i['name'])
        cpt_price.append(i['quote'][currency_price_unit]['price'])
        cpt_symbol.append(i['symbol'])
-       cpt_market_cap.append(i['quote'][currency_price_unit]['marketCap'])
+       cpt_market_cap.append(i['quote'][currency_price_unit]['market_cap'])
     
     dataframe=pd.DataFrame(columns=['Nom','symbole','prix','Market cap'])
     dataframe['Nom']=cpt_name
@@ -125,11 +139,11 @@ def crypto_percent_change():
 
 
   for i in data:
-     cpt_percent_change_24h.append(i['quote'][currency_price_unit]['percentChange24h'])
-     cpt_percent_change_7d.append(i['quote'][currency_price_unit]['percentChange7d'])
-     cpt_percent_change_30d.append(i['quote'][currency_price_unit]['percentChange30d'])
-     cpt_percent_change_60d.append(i['quote'][currency_price_unit]['percentChange60d']) 
-     cpt_percent_change_90d.append(i['quote'][currency_price_unit]['percentChange90d'])
+     cpt_percent_change_24h.append(i['quote'][currency_price_unit]['percent_change_24h'])
+     cpt_percent_change_7d.append(i['quote'][currency_price_unit]['percent_change_7d'])
+     cpt_percent_change_30d.append(i['quote'][currency_price_unit]['percent_change_30d'])
+     cpt_percent_change_60d.append(i['quote'][currency_price_unit]['percent_change_60d']) 
+     cpt_percent_change_90d.append(i['quote'][currency_price_unit]['percent_change_90d'])
      cpt_name.append(i['name'])
  
   
